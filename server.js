@@ -84,26 +84,23 @@ app.post('/login', (req, res) => {
 //get user data
 app.get('/profile/:luid', (req, res) => {
     const { luid } = req.params;
-    pool.query('SELECT * FROM users WHERE id = ?', [luid], (err, results) => {
+    pool.query('SELECT * FROM users WHERE ID = ?', [luid], (err, results) => {
         if (err) {
             return res.status(500).json({ error: 'Database error' });
         }
         if (results.length === 0) {
             return res.status(404).json({ error: 'User not found' });
         }
-        pool.query('SELECT * FROM users WHERE ID = ?', [luid], (err, results) => {
-            if (err) {
-                return res.status(500).json({ error: 'Database error' });
-            }
-            if (results.length === 0) {
-                return res.status(404).json({ error: 'User not found' });
-            }
+        if (results.length > 0) {
             return res.status(200).json({ user: results[0] });
-        })
+        }
     })
 })
 
 //passmod
+app.patch('/profile/:luid', (req, res) => {
+    
+})
 
 // modify prifile data
 
