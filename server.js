@@ -81,9 +81,27 @@ app.post('/login', (req, res) => {
     })
 })
 
-//delete user
-
 //get user data
+app.get('/profile/:luid', (req, res) => {
+    const { luid } = req.params;
+    pool.query('SELECT * FROM users WHERE id = ?', [luid], (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database error' });
+        }
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        pool.query('SELECT * FROM users WHERE ID = ?', [luid], (err, results) => {
+            if (err) {
+                return res.status(500).json({ error: 'Database error' });
+            }
+            if (results.length === 0) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+            return res.status(200).json({ user: results[0] });
+        })
+    })
+})
 
 //passmod
 
