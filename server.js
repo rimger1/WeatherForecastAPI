@@ -81,7 +81,7 @@ app.post('/login', (req, res) => {
     })
 })
 
-//get user data
+//get profile
 app.get('/profile/:luid', (req, res) => {
     const { luid } = req.params;
     pool.query('SELECT * FROM users WHERE ID = ?', [luid], (err, results) => {
@@ -98,11 +98,67 @@ app.get('/profile/:luid', (req, res) => {
 })
 
 //passmod
-app.patch('/profile/:luid', (req, res) => {
-    
+app.patch('/passmod/:luid', (req, res) => {
+    const luid  = req.params.luid;
+    const {oldPasswd, newPasswd, confirm} = req.body;
+    if (!oldPasswd || !newPasswd || !confirm) {
+        return res.status(400).json({ error: 'Missing required fields' });
+    }
+    if (newPasswd != confirm) {
+        return res.status(400).json({ error: 'Passwords do not match' });
+    }
+/*     
+    if (!pwdRegExp.test(newPasswd)) {
+        return res.status(400).json({ error: 'Password does not meet requirements' });
+    }
+*/   
+ pool.query('SELECT passwd FROM users WHERE ID = ? AND passwd = ?', [luid, SHA1(oldPasswd)], (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database error' });
+        }
+        if (results.length === 0) {
+            return res.status(401).json({ error: 'Invalid old password' });
+        }
+        if (results.length > 0 && SHA1(newPasswd) === results[0].passwd) {
+            return res.status(400).json({ error: 'New password cannot be the same as the old password' });
+        }
+        pool.query('UPDATE users SET passwd = ? WHERE ID = ?', [SHA1(newPasswd), luid], (err, results) => {
+            if (err) {
+                return res.status(500).json({ error: 'Database error' });
+            }
+            if (results.affectedRows > 0) {
+                return res.status(200).json({ message: 'Password updated successfully' });
+            }
+        })
+    })
 })
 
-// modify prifile data
+
+// patch aprofile
+app.patch('/profile/:luid', (req, res) => {
+    const luid  = req.params.luid;
+    const {username, email} = req.body;
+    if (!username || !email) {
+        return res.status(400).json({ error: 'Missing required fields' });
+    }
+    pool.query('SELECT * FROM users WHERE ID = ?', [luid], (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database error' });
+        }
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        pool.query('UPDATE users SET name = ?, email = ? WHERE ID = ?', [username, email, luid], (err, results) => {
+            if (err) {
+                return res.status(500).json({ error: 'Database error' });
+            }
+            if (results.affectedRows > 0) {
+                return res.status(200).json({ message: 'Profile updated successfully' });
+            }
+        })
+    })
+})
+
 
 
 
@@ -134,14 +190,39 @@ app.patch('/profile/:luid', (req, res) => {
 /**
  * Weather app
  * 
- * USERS:
- * ------------
- * 
+ * GUEST ENDPOINTS:
+ * -----------------------------
  * HOME PAGE
+ * 
+ * GET weather
  * 
  * POST register
  * 
  * POST login
+ * 
+ * 
+ * USERS ENDPOINTS:
+ * -----------------------------
+ * GET profile
+ * 
+ * PATCH profile
+ * 
+ * PATCH passmod
+ * 
+ * GET weather details
+ * 
+ * 
+ * ADMIN ENDPOINTS:
+ * -----------------------------
+ * GET users
+ * 
+ * POST weather
+ * 
+ * PATCH weather
+ * 
+ * DELETE weather
+ * 
+ * DENY user
  */
 
 
