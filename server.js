@@ -32,8 +32,8 @@ app.get('/', (req, res) => {
 
 //register user
 app.post('/register', (req, res) => {
-    const { username, passwd, email, confirm} = req.body;
-    if (!username || !passwd || !email || !confirm) {
+    const { name, passwd, email, confirm} = req.body;
+    if (!name || !passwd || !email || !confirm) {
         return res.status(400).json({ error: 'Missing required fields' });
     }
     if (passwd != confirm) {
@@ -51,12 +51,12 @@ app.post('/register', (req, res) => {
         if (results.length > 0) {
             return res.status(400).json({ error: 'Email already exists' });
         }
-        pool.query('INSERT INTO users (name, passwd, email) VALUES (?, ?, ?)', [username, SHA1(passwd), email], (err, results) => {
+        pool.query('INSERT INTO users (name, passwd, email) VALUES (?, ?, ?)', [name, SHA1(passwd), email], (err, results) => {
             if (err) {
                 return res.status(500).json({error});
             }
             if (results.affectedRows > 0) {
-                return res.status(201).json({ message: 'User registered successfully' });
+                return res.status(200).json({ message: 'User registered successfully' });
             }
         })
     })
