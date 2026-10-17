@@ -380,22 +380,21 @@ app.get('/weather', (req, res) => {
     })
 })
 
-//get weather details
-app.get('/weather/:id', (req, res) => {
-    const id = req.params.id;
-    pool.query('SELECT * FROM weather WHERE ID = ?', [id], (err, results) => {
+
+// get guest weather
+app.get('/guest/weather', (req, res) => {
+    pool.query('SELECT date, location, weather_type, temp_min, temp_max FROM weather', (err, results) => {
         if (err) {
             return res.status(500).json({ error: 'Database error' });
         }
         if (results.length === 0) {
-            return res.status(404).json({ error: 'Weather data not found' });
+            return res.status(404).json({ error: 'No weather data found' });
         }
         if (results.length > 0) {
             return res.status(200).json({results});
         }
     })
 })
-
 
 
 
