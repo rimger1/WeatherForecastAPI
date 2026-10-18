@@ -326,13 +326,13 @@ app.delete('/weather/:id', (req, res) => {
 })
 
 // deny user
-app.patch('/deny/:id', (req, res) => {
+app.patch('/deny', (req, res) => {
     const luid = req.body.luid;
-    const id = req.params.id;
+    const uid = req.body.uid;
     if (!luid) {
         return res.status(400).json({ error: 'Missing required fields' });
     }
-    if (!id) {
+    if (!uid) {
         return res.status(400).json({ error: 'Missing required fields' });
     }
     pool.query('SELECT * FROM users WHERE ID = ?', [luid], (err, results) => {
@@ -345,7 +345,7 @@ app.patch('/deny/:id', (req, res) => {
         if (results.length > 0 && results[0].role !== 'admin') {
             return res.status(403).json({ error: 'Access denied' });
         }
-        pool.query('UPDATE users SET status = not status WHERE ID = ?', [id], (err, results) => {
+        pool.query('UPDATE users SET status = not status WHERE ID = ?', [uid], (err, results) => {
             if (err) {
                 return res.status(500).json({ err});
             }
