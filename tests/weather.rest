@@ -1,0 +1,56 @@
+@server = http://localhost
+@port = 3000
+@host = {{server}}:{{port}}
+
+###post weather
+POST {{host}}/weather
+Content-Type: application/json
+
+{
+  "luid":7,
+   "date": "2023-10-10",
+   "location": "New York",
+   "temp_min": 20,
+   "temp_max": 25,
+   "weather_type": "Sunny",
+   "precipitation": 1,
+   "precipitation_probability": 1,
+   "wind_speed": 5,
+   "wind_direction": "N",
+   "humidity": 60,
+   "pressure": 1013,
+   "uv_index": 7
+}
+
+###patch weather
+PATCH {{host}}/weather/5
+Content-Type: application/json
+
+{
+  "luid":7,
+   "date": "2023-10-11",
+   "location": "New York",
+   "temp_min": 22,
+   "temp_max": 28,
+   "weather_type": "Cloudy",
+   "precipitation": 2,
+   "precipitation_probability": 2,
+   "wind_speed": 6,
+   "wind_direction": "NE",
+   "humidity": 65,
+   "pressure": 1015,
+   "uv_index": 6
+}
+
+### delete weather
+DELETE {{host}}/weather/5
+Content-Type: application/json
+
+{
+  "luid":7
+}
+
+
+###get all weather
+GET {{host}}/weather
+Content-Type: application/json

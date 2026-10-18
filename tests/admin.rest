@@ -1,0 +1,19 @@
+@server = http://localhost
+@port = 3000
+@host = {{server}}:{{port}}
+
+### get all users
+POST {{host}}/users
+Content-Type: application/json
+
+{
+    "luid": 7
+}
+### deny user
+PATCH {{host}}/deny
+Content-Type: application/json
+
+{
+    "luid": 7,
+    "uid": 5
+}

@@ -1,0 +1,46 @@
+@server = http://localhost
+@port = 3000
+@host = {{server}}:{{port}}
+#### register a new user
+POST {{host}}/register
+Content-Type: application/json
+
+{
+  "name": "helo",
+  "passwd": "helo",
+  "email": "bhlo",
+  "confirm": "helo"
+}
+
+### login with the registered user
+POST {{host}}/login
+Content-Type: application/json
+
+{
+ 
+  "email": "b",
+  "passwd": "b"
+  
+}
+###get user data
+GET {{host}}/profile/7
+Content-Type: application/json
+
+###passmod
+
+PATCH {{host}}/passmod/7
+Content-Type: application/json
+
+{
+  "oldPasswd": "admin",
+  "newPasswd": "admin5",
+  "confirm": "admin5"
+}
+###patch profile
+PATCH {{host}}/profile/7
+Content-Type: application/json
+
+{
+  "username": "admin5",
+  "email": "admin5"
+}
